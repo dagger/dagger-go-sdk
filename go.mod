@@ -6,6 +6,7 @@ go 1.20
 retract [v0.0.0, v0.2.36]
 
 require (
+	github.com/99designs/gqlgen v0.17.2
 	github.com/Khan/genqlient v0.5.0
 	github.com/adrg/xdg v0.4.0
 	github.com/iancoleman/strcase v0.2.0
