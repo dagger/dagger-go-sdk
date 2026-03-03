@@ -10,8 +10,6 @@ import (
 	"github.com/Khan/genqlient/graphql"
 	"go.opentelemetry.io/otel/propagation"
 	"go.opentelemetry.io/otel/trace"
-
-	"github.com/dagger/otel-go"
 )
 
 type EngineConn interface {
@@ -74,7 +72,7 @@ func fallbackSpanContext(ctx context.Context) context.Context {
 	if trace.SpanContextFromContext(ctx).IsValid() {
 		return ctx
 	}
-	return otel.Propagator.Extract(ctx, otel.NewEnvCarrier(true))
+	return propagator.Extract(ctx, newEnvCarrier(true))
 }
 
 func defaultHTTPClient(p *ConnectParams) *http.Client {
@@ -91,7 +89,7 @@ func defaultHTTPClient(p *ConnectParams) *http.Client {
 			r = r.WithContext(fallbackSpanContext(r.Context()))
 
 			// propagate span context via headers (i.e. for Dagger-in-Dagger)
-			otel.Propagator.Inject(r.Context(), propagation.HeaderCarrier(r.Header))
+			propagator.Inject(r.Context(), propagation.HeaderCarrier(r.Header))
 
 			return dialTransport.RoundTrip(r)
 		}),
